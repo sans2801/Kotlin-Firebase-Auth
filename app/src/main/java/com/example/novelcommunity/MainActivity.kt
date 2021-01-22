@@ -15,7 +15,8 @@ class MainActivity : AppCompatActivity() {
         if(user!=null)
         {
             val dashboardIntent = Intent(this, UserDashboard::class.java)
-            //startActivity(dashboardIntent)
+            startActivity(dashboardIntent)
+
         }
     }
 }

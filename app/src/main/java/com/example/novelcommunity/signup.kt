@@ -1,13 +1,17 @@
 package com.example.novelcommunity
 
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.findNavController
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
@@ -41,6 +45,9 @@ class signup : Fragment() {
 
     fun user_signup(view:View)
     {
+        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(requireView().windowToken, 0)
+
         val username = view.findViewById<EditText>(R.id.signup_username).text.toString().trim()
         val password = view.findViewById<EditText>(R.id.signup_password).text.toString().trim()
         val email = view.findViewById<EditText>(R.id.signup_email).text.toString().trim()
@@ -74,9 +81,11 @@ class signup : Fragment() {
             if(task.isSuccessful) {
 
                 FirebaseAuth.getInstance().currentUser?.let {
+                    user.id=it.uid
                     FirebaseDatabase.getInstance().getReference("Users").child(it.uid).setValue(user)
                         .addOnCompleteListener{task->
                             if(task.isSuccessful) {
+                                requireView().findNavController().navigate(R.id.action_signup_to_login)
                                 Toast.makeText(activity, "Sign Up Succesful!", Toast.LENGTH_SHORT).show()
 
                             }
